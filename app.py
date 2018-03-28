@@ -15,4 +15,3 @@ app.secret_key = 'vfregv33f3'
 basic_auth = BasicAuth(app)
 admin = Admin(app)
 db = SQLAlchemy(app)
-
