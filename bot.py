@@ -19,27 +19,10 @@ with open('templates/greetings.md', 'r', encoding='utf-8') as greetings_file:
 
 
 def get_catalog_list():
-    pizzas_list = []
     pizzas = db.session.query(Pizza, Choice).filter(Pizza.active == '1'). \
         join(Choice, Choice.pizza_id == Pizza.pizza_id).all()
-    for pizza_id in set([pizza[0] for pizza in pizzas]):
-        pizza = {
-            'title': pizza_id.title,
-            'description': pizza_id.description,
-            'choices': [
-                {
-                    'title': '{} см, {} гр (арт. {})'.format(
-                        pizza_coice[1].height,
-                        pizza_coice[1].weight,
-                        pizza_coice[1].id
-                    ),
-                    'price': pizza_coice[1].price
-                }
-                for pizza_coice in list(filter(lambda x: x[0].pizza_id == pizza_id.pizza_id, pizzas))
-            ]
-        }
-        pizzas_list.append(pizza)
-    return pizzas_list
+    return [(pizza, list(filter(lambda x: x[1].pizza_id == pizza.pizza_id, pizzas)))
+            for pizza in set([pizza[0] for pizza in pizzas])]
 
 
 @bot.message_handler(commands=['start', 'help'])
